@@ -1,0 +1,106 @@
+#!/bin/sh
+
+###  ~/Library/LaunchAgents/example.cron.plist
+
+echo $(date) "-------- starting daily_mfu_get"
+cd /Users/sandeshgoel/Google\ Drive/FINANCE/SCRAPING
+
+echo $(date) > LOGS/log.mfu-get-funds 2>&1
+
+#echo $PATH >> LOGS/log.mfu-get-funds 2>&1
+source ~/.bash_profile
+#echo $PATH >> LOGS/log.mfu-get-funds 2>&1
+which python3
+
+sleep 10
+
+echo $(date) "-------- starting crypto"
+python3 scrape/crypto-get-funds.py >> LOGS/log.mfu-get-funds 2>&1
+STAT1=$?
+echo "######## crypto_get_funds returned " $STAT1 "\n" | tee -a LOGS/log.mfu-get-funds 2>&1
+if [[ $STAT1 == 1 ]]; then 
+	echo "######## crypto FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.mfu-get-funds 2>&1
+fi
+
+echo $(date) "-------- starting axis"
+python3 scrape/axis-get-funds.py >> LOGS/log.mfu-get-funds 2>&1
+STAT2=$?
+echo "######## axis_get_funds returned " $STAT2 "\n" | tee -a LOGS/log.mfu-get-funds 2>&1
+if [[ $STAT2 == 1 ]]; then 
+	echo "######## axis FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.mfu-get-funds 2>&1
+fi
+
+echo $(date) "-------- starting gold"
+python3 scrape/gold-get-rate.py >> LOGS/log.mfu-get-funds 2>&1
+STAT3=$?
+echo "######## gold_get_rate returned " $STAT3 "\n" | tee -a LOGS/log.mfu-get-funds 2>&1
+if [[ $STAT3 == 1 ]]; then 
+	echo "######## gold FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.mfu-get-funds 2>&1
+fi
+
+echo $(date) "-------- starting casparse"
+python3 scrape/casparse-sandesh.py >> LOGS/log.mfu-get-funds 2>&1
+STAT4=$?
+echo "######## casparse-sandesh returned " $STAT4 "\n" | tee -a  LOGS/log.mfu-get-funds 2>&1
+if [[ $STAT4 == 1 ]]; then 
+	echo "######## casparse-sandesh FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.mfu-get-funds 2>&1
+fi
+
+echo $(date) "-------- starting hdfc"
+python3 scrape/hdfc-get-funds.py >> LOGS/log.mfu-get-funds 2>&1
+STAT5=$?
+echo "######## hdfc_get_funds returned " $STAT5 "\n" | tee -a LOGS/log.mfu-get-funds 2>&1
+if [[ $STAT5 == 1 ]]; then 
+	echo "######## hdfc FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.mfu-get-funds 2>&1
+fi
+
+echo $(date) "-------- starting cm"
+python3 scrape/cm-get-funds.py >> LOGS/log.mfu-get-funds 2>&1
+STAT6=$?
+echo "######## cm_get_funds returned " $STAT6 "\n" | tee -a LOGS/log.mfu-get-funds 2>&1
+if [[ $STAT6 == 1 ]]; then 
+	echo "######## capitalmind FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.mfu-get-funds 2>&1
+fi
+
+
+echo " " > LOGS/log.generate-report 2>&1
+if [[ $STAT1 == 1 ]]; then 
+	echo "######## crypto FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.generate-report 2>&1
+fi
+if [[ $STAT2 == 1 ]]; then 
+	echo "######## axis FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.generate-report 2>&1
+fi
+if [[ $STAT3 == 1 ]]; then 
+	echo "######## gold FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.mfu-get-funds 2>&1
+fi
+if [[ $STAT4 == 1 ]]; then 
+	echo "######## casparse-sandesh FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.generate-report 2>&1
+fi
+if [[ $STAT5 == 1 ]]; then 
+	echo "######## hdfc FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.generate-report 2>&1
+fi
+if [[ $STAT6 == 1 ]]; then 
+	echo "######## capitalmind FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.generate-report 2>&1
+fi
+
+
+echo $(date) "-------- starting report"
+SUBJECT="FAILURE"
+python3 analyze/generate-report.py >> LOGS/log.generate-report 2>&1
+STATREP=$?
+echo "######## generate-report returned " $STATREP "\n" >> LOGS/log.generate-report 2>&1
+if [[ $STATREP == 0 ]]; then SUBJECT="SUCCESS"; fi;
+
+
+EMAILSUB="$SUBJECT generating funds report ($STAT1 $STAT2 $STAT3 $STAT4 $STAT5 $STAT6)" 
+echo "########" $EMAILSUB "\n" >> LOGS/log.mfu-get-funds 2>&1
+echo $(date) >> LOGS/log.mfu-get-funds 2>&1
+echo "##############################################\n" >> LOGS/log.mfu-get-funds 2>&1
+
+cat LOGS/log.generate-report LOGS/log.mfu-get-funds > LOGS/log.email 
+
+echo $(date) "-------- starting email"
+python3 analyze/send_mail.py -s "$EMAILSUB" -f LOGS/log.email -r sandesh@gmail.com
+cat LOGS/log.email >> LOGS/clog.mfu-get-funds
+
+echo $(date) "-------- finished daily_mfu_get"

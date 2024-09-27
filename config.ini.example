@@ -1,0 +1,31 @@
+[mail]
+from=xxx@gmail.com
+passwd=
+
+[data]
+basemfu=DATA/DAILY-MFU/funds-
+basezerodha=DATA/DAILY-ZERODHA/zerodha-
+basegeojit=DATA/DAILY-GEOJIT/stocks-
+basebankhdfc=DATA/DAILY-BANK/hdfc-
+baseothers=DATA/DAILY-OTHERS/Assets-
+
+[mfu]
+username=xxxx
+password=
+canID=17111xxxxxx
+fullname=First Last
+
+[zerodha]
+userid=XK88888
+passwd=
+pin=
+
+[geojit]
+username=OIS000
+password=
+fullname=First Last
+PAN=xxxxx1111x
+
+[bank-hdfc-yourname]
+userid=11111111
+passwd=
