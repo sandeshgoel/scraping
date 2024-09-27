@@ -39,11 +39,11 @@ if [[ $STAT3 == 1 ]]; then
 fi
 
 echo $(date) "-------- starting casparse"
-python3 scrape/casparse-sandesh.py >> LOGS/log.mfu-get-funds 2>&1
+python3 scrape/casparse-analyze.py >> LOGS/log.mfu-get-funds 2>&1
 STAT4=$?
-echo "######## casparse-sandesh returned " $STAT4 "\n" | tee -a  LOGS/log.mfu-get-funds 2>&1
+echo "######## casparse-analyze returned " $STAT4 "\n" | tee -a  LOGS/log.mfu-get-funds 2>&1
 if [[ $STAT4 == 1 ]]; then 
-	echo "######## casparse-sandesh FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.mfu-get-funds 2>&1
+	echo "######## casparse-analyze FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.mfu-get-funds 2>&1
 fi
 
 echo $(date) "-------- starting hdfc"
@@ -74,7 +74,7 @@ if [[ $STAT3 == 1 ]]; then
 	echo "######## gold FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.mfu-get-funds 2>&1
 fi
 if [[ $STAT4 == 1 ]]; then 
-	echo "######## casparse-sandesh FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.generate-report 2>&1
+	echo "######## casparse-analyze FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.generate-report 2>&1
 fi
 if [[ $STAT5 == 1 ]]; then 
 	echo "######## hdfc FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.generate-report 2>&1
