@@ -83,6 +83,23 @@ def targetType(typ):
     for k in target.keys():
         if subtype2type[k] == typ: t += target[k]
     return t
+
+def get_default_owner():
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    data = config['users']
+    owners = [x.strip() for x in data['owners'].split(',')]
+    #print(owners)
+    return owners[0]
+
+def get_owner_parents():
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    data = config['users']
+    owners = [x.strip() for x in data['parents'].split(',')]
+    #print(owners)
+    return owners
+    
     
 # -----------------------------------------------------------------------------
 
@@ -198,7 +215,7 @@ def file2df_mfparse(file):
     df['Direct'] = df['Desc'].str.contains('Direct', case=False)
     df['Source'] = 'MFU'
     if 'Owner' not in df.columns: 
-        df['Owner'] = 'sandesh'
+        df['Owner'] = get_default_owner()
     
     return df
 
@@ -230,7 +247,7 @@ def file2df_funds(file):
     df['Direct'] = df['Desc'].str.contains('Direct', case=False)
     df['Code'] = df['Fund Code'] + '-' + df['Scheme Code']
     df['Source'] = 'MFU'
-    df['Owner'] = 'sandesh'
+    df['Owner'] = get_default_owner()
     
     if 'Fund Code' in df: df.pop('Fund Code')
     if 'Scheme Code' in df: df.pop('Scheme Code')
@@ -290,7 +307,7 @@ def file2df_geojit(file, base):
     df['Percent'] = 100 * df['Value'] / df['Value'].sum()
     df['Category'] = df.apply (lambda row: label_category (row),axis=1)
     df['Source'] = 'GEOJIT'
-    df['Owner'] = 'sandesh'
+    df['Owner'] = get_default_owner()
     df['Desc'] = df['Code']
     if 'Product' in df: df.pop('Product')
     if 'Venue' in df: df.pop('Venue')
@@ -413,7 +430,7 @@ def file2df_zerodha(file, base):
     df['Percent'] = 100 * df['Value'] / df['Value'].sum()
     df['Category'] = df.apply (lambda row: label_category (row),axis=1)
     df['Source'] = 'ZERODHA'
-    df['Owner'] = 'sandesh'
+    df['Owner'] = get_default_owner()
     df['Desc'] = df['Code']
     return df
 
@@ -436,7 +453,7 @@ def file2df_assets(file, base):
         df = pd.concat([df,pd.DataFrame({'Category': ['PROPERTY'], 
                                          'Desc': ['Aggregate'], 
                                          'Value': [84000000], 
-                                         'Owner': ['sandesh']})
+                                         'Owner': [get_default_owner()]})
                         ],
                         ignore_index=True)
 
@@ -543,7 +560,7 @@ def file2df_cm(file, base):
 
     df['Value'] = df['Current']/100000
     df['Percent'] = 100 * df['Value'] / df['Value'].sum()
-    df['Owner'] = 'sandesh'
+    df['Owner'] = get_default_owner()
     df['Desc'] = 'Capitalmind PMS'
     df['Source'] = 'Capitalmind'
     df['Category'] = 'PMS'
@@ -904,8 +921,7 @@ def add_ws(wb, df, o, title, style, now):
             row += 1
         row += 1
 
-        for owner in ['saroj', 'skgoel']:#summary_owner.index:
-
+        for owner in get_owner_parents():
             row += 1
             ws.write_row(row, 0, ['>>>>>> ' + owner + '\'s INVESTMENT SUMMARY <<<<<<'], style['bold'])
             row += 1

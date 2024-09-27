@@ -8,5 +8,5 @@ echo $PATH
 
 echo $(date) > LOGS/log.weekly_run 2>&1
 
-python3 analyze/send_latest_report.py -r sandesh@gmail.com,anshugoelnoida@gmail.com >> LOGS/log.weekly_run 2>&1
+python3 analyze/send_latest_report.py >> LOGS/log.weekly_run 2>&1
 python3 scrape/cams.py -v >> LOGS/log.weekly_run 2>&1

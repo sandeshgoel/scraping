@@ -100,7 +100,7 @@ echo "##############################################\n" >> LOGS/log.mfu-get-fund
 cat LOGS/log.generate-report LOGS/log.mfu-get-funds > LOGS/log.email 
 
 echo $(date) "-------- starting email"
-python3 analyze/send_mail.py -s "$EMAILSUB" -f LOGS/log.email -r sandesh@gmail.com
+python3 analyze/send_mail.py -s "$EMAILSUB" -f LOGS/log.email
 cat LOGS/log.email >> LOGS/clog.mfu-get-funds
 
 echo $(date) "-------- finished daily_mfu_get"

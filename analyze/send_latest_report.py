@@ -1,17 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Mar 16 12:53:37 2018
-
-@author: sandeshgoel
-"""
-
 from analyze_util import *
 from send_mail_util import *
 import argparse
 
 parser = argparse.ArgumentParser(description='Gap summary report')
-parser.add_argument('-r', '--recipient', type=str, help='recipient(s) of message, comma separated list (default sandesh@gmail.com)', default='sandesh@gmail.com')
 args = parser.parse_args()
 
 NUM_DAYS = 30
@@ -38,5 +29,6 @@ config.read('config.ini')
 mail = config['mail']
 mail_from = mail['from']
 mail_pwd = mail['passwd']
+mail_to = mail['weekly_to']
 
-send_mail(sub, "Latest net worth statement", args.recipient, rep, mail_from, mail_pwd)
+send_mail(sub, "Latest net worth statement", mail_to, rep, mail_from, mail_pwd)

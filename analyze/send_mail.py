@@ -6,7 +6,6 @@ parser.add_argument('-s', '--subject', type=str, help='email subject (default te
 parser.add_argument('-m', '--message', type=str, help='email message (default test)', default='test')
 parser.add_argument('-f', '--filename', type=str, help='file containing email message')
 parser.add_argument('-a', '--attach', type=str, help='file to send as attachment', default='')
-parser.add_argument('-r', '--recipient', type=str, help='recipient(s) of message, comma separated list (default sandesh@gmail.com)', default='sandesh@gmail.com')
 args = parser.parse_args()
 
 if args.filename is None:
@@ -23,5 +22,6 @@ config.read('config.ini')
 mail = config['mail']
 mail_from = mail['from']
 mail_pwd = mail['passwd']
+mail_to = mail['daily_to']
 
-send_mail(args.subject, message, args.recipient, args.attach, mail_from, mail_pwd)
+send_mail(args.subject, message, mail_to, args.attach, mail_from, mail_pwd)

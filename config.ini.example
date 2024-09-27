@@ -1,31 +1,72 @@
 [mail]
-from=xxx@gmail.com
+from=abc@gmail.com
 passwd=
+daily_to=xyz@gmail.com
+weekly_to=a@b.c,x@y.z
 
 [data]
+basemfparse=DATA/DAILY-MFU/parse-
 basemfu=DATA/DAILY-MFU/funds-
 basezerodha=DATA/DAILY-ZERODHA/zerodha-
+basecapitalmind=DATA/DAILY-CAPITALMIND/capitalmind-
 basegeojit=DATA/DAILY-GEOJIT/stocks-
 basebankhdfc=DATA/DAILY-BANK/hdfc-
+basebankaxis=DATA/DAILY-BANK/axis-
+basebankidfc=DATA/DAILY-BANK/idfc-
 baseothers=DATA/DAILY-OTHERS/Assets-
+basecrypto=DATA/DAILY-CRYPTO/Crypto-
+basecryptocostdet=DATA/DAILY-CRYPTO/cost-detail/Crypto-Cost-Detail-
+basevested=DATA/DAILY-VESTED/Vested-
+basevesteddet=DATA/DAILY-VESTED/Vested-Detail-
+basecams=DATA/DAILY-CAMS/cams-
+basegold=DATA/DAILY-GOLD/gold-
 
-[mfu]
-username=xxxx
-password=
-canID=17111xxxxxx
-fullname=First Last
+[users]
+owners=username1, username2
+# first owner in the above list is the default owner
+
+# all the following should be subset of owners list
+parents=username1, username2
+coindcx_users=username1
+binance_users=username1
+wazirx_users=username1, username2
+
 
 [zerodha]
-userid=XK88888
+userid=
 passwd=
 pin=
 
 [geojit]
-username=OIS000
+username=
 password=
-fullname=First Last
-PAN=xxxxx1111x
+fullname=
+PAN=
 
-[bank-hdfc-yourname]
-userid=11111111
+[capitalmind]
+userid=abc@gmail.com
 passwd=
+
+#-------------- HDFC bank -----------------
+
+[bank-hdfc-username1]
+userid=22224444
+passwd=
+
+[bank-hdfc-username2]
+userid=22224444
+passwd=
+
+#-------------- AXIS bank -----------------
+
+[bank-axis-username1]
+userid=
+passwd=
+
+#-------------- CAM capital gain -----------------
+
+[cam-username1]
+email=abc@gmail.com
+pan=
+
+

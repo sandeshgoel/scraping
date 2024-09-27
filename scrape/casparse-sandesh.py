@@ -6,10 +6,17 @@ import datetime
 import os 
 import time 
 import operator
+import requests
 
 # -----------------------------------------------------------------------------
 
-import requests
+def get_default_owner():
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    data = config['users']
+    owners = [x.strip() for x in data['owners'].split(',')]
+    #print(owners)
+    return owners[0]
 
 def url_get(s, url):
     #print("\nGETTING ...", url)
@@ -800,7 +807,7 @@ else:
     print("\nOpening file %s for processing ...\n" % args.file)
     
     owner = args.file.split('-')[-1].split('.')[0]
-    if owner not in owners: owner = 'sandesh'
+    if owner not in owners: owner = get_default_owner()
 
     if args.password is None:
         cam = config['cam-'+owner]

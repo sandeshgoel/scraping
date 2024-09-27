@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Mar 16 12:59:58 2018
-
-@author: sandeshgoel
-"""
-
 from os.path import basename
 import smtplib
 from email.mime.application import MIMEApplication
