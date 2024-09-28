@@ -18,8 +18,8 @@ def get_default_owner():
     #print(owners)
     return owners[0]
 
-def url_get(s, url):
-    #print("\nGETTING ...", url)
+def url_get(s, url, verbose):
+    if verbose: print("\nGETTING ...", url)
     r = s.get(url)#, verify=False)
     #print("STATUS =", r.status_code)
     if r.status_code != 200:
@@ -54,12 +54,12 @@ def get_date_diff(d1_str, d2_str):
     d2 = datetime.datetime.strptime(d2_str, "%d-%m-%Y")
     return (d1-d2).days
 
-def get_nav_history(amfi):
+def get_nav_history(amfi, verbose):
     url = "https://api.mfapi.in/mf/" + amfi
 
     # initialize session
     s = requests.session()
-    r = url_get(s, url)
+    r = url_get(s, url, verbose)
 
     data = json.loads(r.content)
     #print(data.keys())
@@ -150,7 +150,7 @@ def get_nav_history_cache(amfi, force, verbose):
         with open(fname, 'r') as file:
             res = json.load(file)
     else:
-        res = get_nav_history(amfi)
+        res = get_nav_history(amfi, verbose)
         if verbose: 
             print("Saving scheme data to file %s ..." % fname)
         with open(fname, "w") as outfile:

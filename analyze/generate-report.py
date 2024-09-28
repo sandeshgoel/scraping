@@ -29,6 +29,8 @@ baseothers = data['baseothers']
 basecrypto = data['basecrypto']
 basevested = data['basevested']
 
+basecams = data['basecams']
+
 sources = ['AXIS', 'HDFC', 'MF', 'GEOJIT', 'ZERODHA', 'OTHER', 'CRYPTO', 'IDFC', 'CM', 'VESTED']
 oldest = {}
 recent = {}
@@ -60,6 +62,19 @@ for offset in range(args.num_days):
             print("\n** AXIS Bank summary is TOO old (%d days) **\n" % offset)
             RET_CODE = 1
         break
+
+cam_owners = [x.split('-')[1] for x in config.sections() if x.startswith('cam-')]
+
+for owner in cam_owners:
+    fname = get_latest_file(basecams, owner)
+    if fname == '': 
+        print(f'\n** No CAMS file found for {owner} **\n')
+    date_str = fname[len(basecams):len(basecams)+10]
+    date_obj = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+    today = datetime.datetime.now()
+    difference = (today - date_obj).days
+    if difference > 8:
+        print(f'** CAMS-{owner} file is too old ({difference} days since {date_str}) **\n')
 
 dfc = get_classifier_df()
 dfic = get_isin_classifier_df()
