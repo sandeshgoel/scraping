@@ -65,6 +65,29 @@ def get_price(symbol):
         price = -1
     return price
 
+def get_price_wazirx_all(syms):
+    s = requests.session()
+    url = 'https://api.wazirx.com/sapi/v1/tickers/24hr'
+    for i in range(5):
+        try:
+            r = s.get(url)
+            d = json.loads(r.content)
+            if len(d) > 0: 
+                break
+            else:
+                print('Empty result, retrying')
+                time.sleep(1)
+        except Exception as e:
+            if i>1: print('Exception %d: wazirx %s:' % (i), e)
+            time.sleep(1)
+
+    ret = {}
+    for s in syms:
+        ret[s] = next(int(float(x.get('lastPrice', -1))) for x in d if x['symbol'] == s.lower()+'inr')
+
+    return ret
+
+
 def get_price_wazirx(symbol):
     symbol = symbol.lower() + 'inr'
     #print('Getting price for symbol %s ...' % symbol)
@@ -230,16 +253,18 @@ if args.process == 0:
     for sym in syms:
         if symbol_map.get(sym, '') == '':
             symbol_map[sym] = (sym+'-USD')
-        for i in range(5):
-            try:
-                wazirx_price[sym] = get_price_wazirx(sym)
-                time.sleep(1)
-                break
-            except Exception as e:
-                print('Exception %d: %s: wazirx' % (i, sym), e)
-                time.sleep(3)
+        # for i in range(5):
+        #     try:
+        #         wazirx_price[sym] = get_price_wazirx(sym)
+        #         time.sleep(1)
+        #         break
+        #     except Exception as e:
+        #         print('Exception %d: %s: wazirx' % (i, sym), e)
+        #         time.sleep(3)
 
-    #print(wazirx_price)
+    wazirx_price = get_price_wazirx_all(syms)
+    
+    print(wazirx_price)
 
     # get the symbol prices from yahoo
 #    for sym in syms:
