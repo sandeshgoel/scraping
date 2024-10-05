@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 import configparser
 import time
 import pandas as pd
+import sys
 
 def get_gold_rate():
     try:
@@ -33,7 +34,8 @@ def get_gold_rate():
         
         return gold_rate
     except Exception as e:
-        return "An error occurred: {}".format(str(e))
+        print("An error occurred: {}".format(str(e)))
+        return -1
 
 if __name__ == "__main__":        
     config = configparser.ConfigParser()
@@ -43,8 +45,12 @@ if __name__ == "__main__":
     print(basegold)
 
     gold_rate = get_gold_rate()
+    gold_rate = int(float(gold_rate))
     print("Latest gold rate:", gold_rate)
 
+    if gold_rate == -1:
+        sys.exit(1)
+        
     now = time.time()
     nowstr = time.strftime('%Y-%m-%d_%H-%M-UTC', time.gmtime(now))
     todaystr = time.strftime('%Y-%m-%d', time.gmtime(now))

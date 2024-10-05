@@ -31,7 +31,7 @@ basevested = data['basevested']
 
 basecams = data['basecams']
 
-sources = ['AXIS', 'HDFC', 'MF', 'GEOJIT', 'ZERODHA', 'OTHER', 'CRYPTO', 'IDFC', 'CM', 'VESTED']
+sources = ['AXIS', 'HDFC', 'MF', 'GEOJIT', 'ZERODHA', 'OTHER', 'CRYPTO', 'IDFC', 'CM', 'VESTED', 'CAMS']
 oldest = {}
 recent = {}
 
@@ -73,6 +73,7 @@ for owner in cam_owners:
     date_obj = datetime.datetime.strptime(date_str, "%Y-%m-%d")
     today = datetime.datetime.now()
     difference = (today - date_obj).days
+    if recent.get('CAMS', 0) <  difference: recent['CAMS'] = difference
     if difference > 8:
         print(f'** CAMS-{owner} file is too old ({difference} days since {date_str}) **\n')
 

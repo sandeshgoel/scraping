@@ -4,7 +4,7 @@ cd /Users/sandeshgoel/Google\ Drive/FINANCE/SCRAPING
 source ~/.bash_profile
 
 echo $(date) 
-echo $PATH 
+#echo $PATH 
 
 echo $(date) > LOGS/log.weekly_run 2>&1
 

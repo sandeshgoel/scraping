@@ -125,7 +125,7 @@ def get_latest_gold_rate():
     df = xl.parse(0)    
     records = df.to_dict()
     goldrate = records['Gold Rate'][0]
-    print(f'Goldrate from {goldfile}: {goldrate}')
+    #print(f'Goldrate from {goldfile}: {goldrate}')
     return goldrate
     
 def get_report_file(now, offset):

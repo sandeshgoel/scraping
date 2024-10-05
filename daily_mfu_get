@@ -71,7 +71,7 @@ if [[ $STAT2 == 1 ]]; then
 	echo "######## axis FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.generate-report 2>&1
 fi
 if [[ $STAT3 == 1 ]]; then 
-	echo "######## gold FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.mfu-get-funds 2>&1
+	echo "######## gold FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.generate-report 2>&1
 fi
 if [[ $STAT4 == 1 ]]; then 
 	echo "######## casparse-analyze FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.generate-report 2>&1
