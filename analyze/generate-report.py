@@ -131,7 +131,10 @@ for offset in range(args.num_days):
         if not found: 
             recent['OTHER'] = offset
             found = True
-
+if not found:
+    print(f'No asset file found in last {args.num_days} days')
+    sys.exit(1)
+    
 #print('Done getting OTHER ASSET files')
     
 found = False

@@ -95,7 +95,7 @@ def get_cams_report(user, verbose):
     driver.find_element(By.CSS_SELECTOR, "mat-radio-button[value='detailed']").click() 
     time.sleep(1)
     driver.find_element(By.CSS_SELECTOR, "mat-radio-button[value='SP']").click() 
-    time.sleep(1)
+    time.sleep(10)
     driver.find_element(By.CSS_SELECTOR, "mat-radio-button[value='YT']").click() 
     time.sleep(1)
 
