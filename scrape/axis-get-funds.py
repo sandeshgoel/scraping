@@ -16,7 +16,6 @@ import re
 timeout = 60
 
 def exception_quit(browser):
-	input('press key ...')
 	browser.quit()
 	sys.exit(1)
 

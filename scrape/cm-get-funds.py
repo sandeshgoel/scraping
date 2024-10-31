@@ -40,7 +40,6 @@ def wait_load(browser, timeout, xpath):
 	try:
 		WebDriverWait(browser, timeout).until(EC.visibility_of_element_located((By.XPATH, xpath)))
 	except TimeoutException:
-		input('Enter to continue ...')
 		print("Timed out waiting for page to load")
 		exception_quit(browser)
 

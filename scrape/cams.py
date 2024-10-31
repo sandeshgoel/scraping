@@ -92,13 +92,17 @@ def get_cams_report(user, verbose):
     action.move_to_element(elements[0]).click().perform()
     if verbose: print('Clicked close icon')
 
+    time.sleep(1)
     driver.find_element(By.CSS_SELECTOR, "mat-radio-button[value='detailed']").click() 
+    if verbose: print('Clicked detailed')
     time.sleep(1)
     driver.find_element(By.CSS_SELECTOR, "mat-radio-button[value='SP']").click() 
-    time.sleep(10)
+    if verbose: print('Clicked SP')
+    time.sleep(20)
     driver.find_element(By.CSS_SELECTOR, "mat-radio-button[value='YT']").click() 
+    if verbose: print('Selected radio button YT')
+    
     time.sleep(1)
-
     # enter from_date
     driver.find_element(By.CSS_SELECTOR, "mat-datepicker-toggle").click()
     if verbose: print("Clicked datepicker")
@@ -146,7 +150,7 @@ def get_cams_report(user, verbose):
 
     driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click() 
     if verbose: print("Clicked submit")
-    time.sleep(5)
+    time.sleep(10)
     #input("Enter something to continue ...")
 
     driver.quit()
