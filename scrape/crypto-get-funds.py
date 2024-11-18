@@ -282,8 +282,9 @@ if args.process == 0:
         df.at[index, 'NAV'] = symbol_price[s]
         df.at[index, 'NAVINR'] = wazirx_price[s]
         df.at[index, 'USD'] = usdinr
-        df.at[index, 'Value'] = row['Units'] * wazirx_price[s]
+        df.at[index, 'ValueWX'] = row['Units'] * wazirx_price[s]
         df.at[index, 'ValueYF'] = row['Units'] * symbol_price[s] * usdinr
+        df.at[index, 'Value'] = row['Units'] * symbol_price[s] * usdinr
 
     # Generate fund excel
     fname = basecrypto+nowstr+'.xlsx'

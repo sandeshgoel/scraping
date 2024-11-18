@@ -12,14 +12,16 @@ import configparser
 from time_util import *
 
 def label_category(row):    
-    if ('GOLD' in row['Code']) or ('SGB' in row['Code']):
-        return 'GOLD'
+    if ('GOLD' in row['Code']):
+        return 'GOLDETF'
+    if ('SGB' in row['Code']):
+        return 'SGB'
     if 'NIFTY' in row['Code'] or 'NIFETF' in row['Code']:
         return 'NIFTY'
     return 'STOCKS'
 
 def label_subtype(row):
-    if row['Category'] in ['GOLD']:
+    if row['Category'] in ['GOLD', 'GOLDUS', 'GOLDETF', 'SGB', 'Jewellary']:
         return 'GOLD'
 
     if row['Category'] in ['FD']:
@@ -68,11 +70,11 @@ subtype2type = {'GOLD':'GOLD',
                 'CRYPTO':'CRYPTO',
                 'CONTINGENCY':'CONTINGENCY',
                 'PROPERTY': 'CONTINGENCY'}
-target = {'GOLD':10.5, 
-          'BOND':20, 'GILT':10, 'FD':5, 'STDEBT':2, 'LIQUID':18, 
-          'PASSIVE':4, 'ACTIVE':10, 
-          'PE':5.5,
-          'GLOBAL':11,
+target = {'GOLD':10, 
+          'BOND':20, 'GILT':10, 'FD':4, 'STDEBT':2, 'LIQUID':17, 
+          'PASSIVE':5, 'ACTIVE':9, 
+          'PE':7,
+          'GLOBAL':12,
           'CRYPTO':4}
 
 def label_type(row):
@@ -585,6 +587,7 @@ def file2df_vested(file, base):
     df.loc[df['Desc'] == 'USD', 'Category'] = 'Liquid'
     df.loc[df['Desc'] == 'IBIT', 'Category'] = 'BTCETF'
     df.loc[df['Desc'] == 'KWEB', 'Category'] = 'China'
+    df.loc[df['Desc'] == 'GLDM', 'Category'] = 'GOLDUS'
     return df
 
 def get_vested_df(now, offset, base):
