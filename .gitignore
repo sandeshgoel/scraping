@@ -6,6 +6,8 @@ REPORTS/
 SUMMARY/
 scheme_cache/
 config.ini
+Icon*
+*/Icon*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

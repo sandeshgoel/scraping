@@ -15,6 +15,8 @@ import configparser
 
 config = configparser.ConfigParser()
 config.read('config.ini')
+update_target_alloc(config)
+
 #print(config.sections())
 data = config['data']
 basemfparse = data['basemfparse']

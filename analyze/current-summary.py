@@ -53,7 +53,7 @@ def get_target_allocation(type_summary, sub_summary, add_funds):
         a = sub_summary.loc[x]['Percent']
         typ = x[0]
         subtype = x[1]
-        t = target[subtype]
+        t = get_target_alloc(subtype)
         tv = t * new_total / 100
         dev = tv - v
         print("%7s %7s %5.1f%% %5.1f%% (%4d lacs)" % (typ, subtype, t, a, dev))
@@ -71,6 +71,8 @@ args = args.parse_args()
 
 config = configparser.ConfigParser()
 config.read('config.ini')
+update_target_alloc(config)
+
 #print(config.sections())
 data = config['data']
 #basemfu = data['basemfu']

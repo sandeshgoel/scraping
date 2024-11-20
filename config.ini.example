@@ -69,4 +69,23 @@ passwd=
 email=abc@gmail.com
 pan=
 
+#-------------- Target Allocation % -----------------
 
+[target-alloc]
+# gold
+GOLD=10
+# debt
+BOND=20
+GILT=10 
+FD=4
+STDEBT=2 
+LIQUID=18 
+# equity
+PASSIVE=5 
+ACTIVE=9 
+# private equity
+PE=6
+# global
+GLOBAL=12
+# crypto
+CRYPTO=4

@@ -70,20 +70,34 @@ subtype2type = {'GOLD':'GOLD',
                 'CRYPTO':'CRYPTO',
                 'CONTINGENCY':'CONTINGENCY',
                 'PROPERTY': 'CONTINGENCY'}
-target = {'GOLD':10, 
-          'BOND':20, 'GILT':10, 'FD':4, 'STDEBT':2, 'LIQUID':17, 
-          'PASSIVE':5, 'ACTIVE':9, 
-          'PE':7,
-          'GLOBAL':12,
-          'CRYPTO':4}
+
+target_alloc = {}
+
+def validate_target_alloc():
+    tot = sum([v for k, v in target_alloc.items()])
+    if tot != 100:
+        print(f'ERROR: Total target allocation is not 100%: {tot}')
+        sys.exit(1)
+        
+def update_target_alloc(config):
+    global target_alloc
+    
+    section = dict(config['target-alloc'])
+    for key, value in section.items():
+        target_alloc[key.upper()] = int(value) 
+    #print(target_alloc)
+    validate_target_alloc()
+    
+def get_target_alloc(subtype):
+    return target_alloc.get(subtype.upper(), 0)
 
 def label_type(row):
     return subtype2type[row['Subtype']]
 
 def targetType(typ):
     t = 0
-    for k in target.keys():
-        if subtype2type[k] == typ: t += target[k]
+    for k in target_alloc.keys():
+        if subtype2type[k] == typ: t += get_target_alloc(k)
     return t
 
 def get_default_owner():
@@ -1261,7 +1275,7 @@ def add_ws_summary(wb, style, dfall, dffull, tl,
         ws.write_row(row, 3, [a/100], style['percent'])
         typ = x[0]
         subtype = x[1]
-        t = target[subtype]
+        t = get_target_alloc(subtype)
         ws.write_row(row, 4, [t/100], style['percent'])
         tv = v * t / a
         dev = tv - v

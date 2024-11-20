@@ -16,10 +16,26 @@ import re
 timeout = 60
 
 def exception_quit(browser):
+	"""
+	Quit the browser and exit with a status of 1.
+
+	:param browser: The webdriver object to quit
+	"""
 	browser.quit()
 	sys.exit(1)
 
 def wait_load(browser, timeout, xpath):
+	"""
+	Waits for a page element to load.
+
+	:param browser: The webdriver object.
+	:param timeout: The number of seconds to wait for the element to load.
+	:param xpath: The XPath of the element to wait for.
+
+	Prints a message indicating the wait, and then waits for the element to
+	load. If the element does not load within the specified timeout, prints
+	an error message and calls exception_quit to exit the script.
+	"""
 	print("%s: Waiting for %d seconds [%s]" % (time.strftime('%H:%M:%S', time.gmtime(time.time())), timeout, xpath))
 	try:
 		WebDriverWait(browser, timeout).until(EC.presence_of_element_located((By.XPATH, xpath)))
@@ -28,9 +44,20 @@ def wait_load(browser, timeout, xpath):
 		exception_quit(browser)
 
 def load_page(browser, url, xpath):
-	browser.get(url)
-	print("%s: Loading %s ..." % (time.strftime('%H:%M:%S', time.gmtime(time.time())), url))
-	wait_load(browser, timeout, xpath)
+    """
+    Loads a webpage and waits for a specified element to be visible.
+
+    :param browser: The webdriver object used to load the page.
+    :param url: The URL of the webpage to load.
+    :param xpath: The XPath of the element to wait for after the page loads.
+
+    Prints a message indicating that the page is loading, and then waits for
+    the page element specified by the XPath to be visible. If the element does
+    not load within the specified timeout, the script will exit.
+    """
+    browser.get(url)
+    print("%s: Loading %s ..." % (time.strftime('%H:%M:%S', time.gmtime(time.time())), url))
+    wait_load(browser, timeout, xpath)
 
 def print_all_elements(browser):
 	print('Printing all elements')
