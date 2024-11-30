@@ -1,13 +1,12 @@
 import time
 import glob
 import pandas as pd
-from pandas import ExcelWriter
-from pandas import ExcelFile
 import numpy as np
 import sys
 import xlsxwriter
 from xlsxwriter.utility import * #xl_rowcol_to_cell
 import configparser
+from create_sunburst import create_sunburst
 
 from time_util import *
 
@@ -65,8 +64,8 @@ def label_subtype(row):
 subtype2type = {'GOLD':'GOLD', 
                 'BOND':'DEBT', 'GILT':'DEBT', 'FD':'DEBT', 'LIQUID':'DEBT', 'STDEBT':'DEBT',
                 'PASSIVE':'EQUITY', 'ACTIVE':'EQUITY',
-                'PE': 'PE',
-                'GLOBAL':'GLOBAL',
+                'PE': 'EQUITY',
+                'GLOBAL':'EQUITY',
                 'CRYPTO':'CRYPTO',
                 'CONTINGENCY':'CONTINGENCY',
                 'PROPERTY': 'CONTINGENCY'}
@@ -148,6 +147,17 @@ def get_report_file(now, offset):
     base = "REPORTS/report-"
     nowdate = time_str_date_utc(now - offset*86400)
     fname = base + nowdate + '.xlsx'
+    files = glob.glob(fname)
+    if files == []: 
+        #print("No files found %s" % fname)
+        return ""
+    file = files[0]
+    return file
+
+def get_image_file(now, offset):
+    base = "IMAGES/asset-allocation-"
+    nowdate = time_str_date_utc(now - offset*86400)
+    fname = base + nowdate + '.png'
     files = glob.glob(fname)
     if files == []: 
         #print("No files found %s" % fname)
@@ -1228,18 +1238,28 @@ def add_ws_summary(wb, style, dfall, dffull, tl,
         print("%6s: %4.1f%%  %4.1f%% (%4d lacs)" % (x, tp, ap, dev))
     print("")
 
-    chart1 = wb.add_chart({'type': 'pie'})
-    chart1.add_series({
-        'name':       'Asset allocation',
-        'categories': [wsname, row-numrows, 0, row-1, 0],
-        'values':     [wsname, row-numrows, 1, row-1, 1],
-        'data_labels':{'percentage':True,'category':True,'position':'outside_end'}
-    })
-    chart1.set_title({'name': 'Asset Allocation'})
-    chart1.set_legend({'none': True})
-    chart1.set_size({'width': 300, 'height': 300})
-    chart1.set_style(10)
-    ws.insert_chart('G2', chart1)
+    # chart1 = wb.add_chart({'type': 'pie'})
+    # chart1.add_series({
+    #     'name':       'Asset allocation',
+    #     'categories': [wsname, row-numrows, 0, row-1, 0],
+    #     'values':     [wsname, row-numrows, 1, row-1, 1],
+    #     'data_labels':{'percentage':True,'category':True,'position':'outside_end'}
+    # })
+    # chart1.set_title({'name': 'Asset Allocation'})
+    # chart1.set_legend({'none': True})
+    # chart1.set_size({'width': 300, 'height': 300})
+    # chart1.set_style(10)
+    # ws.insert_chart('G2', chart1)
+
+    # insert a sunburst chart
+    
+    img_fname = f'IMAGES/asset-allocation-{todate}.png'
+    img = create_sunburst(
+        cat_summary.reset_index().rename(columns={
+            'Type': 'Col1', 'Subtype':'Col2', 'Category': 'Col3'}), 
+        title=f'Asset Allocation ({todate})', 
+        filename=img_fname)
+    ws.insert_image(2, 6, img_fname, {'image': img, 'x_scale': 0.7, 'y_scale': 0.7})
     
     # today split by owner
     row += 2
@@ -1539,7 +1559,7 @@ def add_ws_trans(wb, style, df_daily, dfg_daily, NUM_DAYS, now):
     row += 2
     ws.set_column(0, 1, 15)
     ws.set_column(2, 5, 12)
-    
+            
 def generate_report(tl, df_daily, dfg_daily, dfz_daily, dfa_daily, dfc_daily, dfb_daily, dfcm_daily, dfall, dffull,
                     sub_summary, cat_summary, type_summary, 
                     ave_summary, dir_summary, own_summary,
