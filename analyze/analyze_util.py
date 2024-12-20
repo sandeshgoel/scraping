@@ -20,8 +20,12 @@ def label_category(row):
     return 'STOCKS'
 
 def label_subtype(row):
-    if row['Category'] in ['GOLD', 'GOLDUS', 'GOLDETF', 'SGB', 'Jewellary']:
-        return 'GOLD'
+    if row['Category'] in ['GOLDUS', 'GOLDETF']:
+        return 'GOLD-ETF'
+    if row['Category'] in ['SGB']:
+        return 'GOLD-SGB'
+    if row['Category'] in ['Jewellary', 'GOLD']:
+        return 'GOLD-PHY'
 
     if row['Category'] in ['FD']:
         return 'FD'
@@ -42,7 +46,7 @@ def label_subtype(row):
         return 'ACTIVE'
     if row['Category'] in ['Mid Cap']:
         return 'ACTIVE'
-    if row['Category'] in ['PE']:
+    if row['Category'].split('-')[0] in ['PE']:
         return 'PE'
 
     if row['Category'] in ['Global', 'USA', 'China']:
@@ -56,19 +60,26 @@ def label_subtype(row):
 
     if row['Category'] in ['PROPERTY']:
         return 'PROPERTY'
+    if row['Category'] in ['Plot', 'Shop']:
+        return 'India'
+    if row['Category'] in ['Flat']:
+        return 'Dubai'
 
     print('label_subtype: Invalid category: %s' % row['Category'])
     print(row)
     sys.exit(1)
 
-subtype2type = {'GOLD':'GOLD', 
+subtype2type = {'GOLD':'GOLD',  'GOLD-ETF': 'GOLD', 'GOLD-SGB': 'GOLD', 'GOLD-PHY': 'GOLD',
                 'BOND':'DEBT', 'GILT':'DEBT', 'FD':'DEBT', 'LIQUID':'DEBT', 'STDEBT':'DEBT',
                 'PASSIVE':'EQUITY', 'ACTIVE':'EQUITY',
-                'PE': 'EQUITY',
                 'GLOBAL':'EQUITY',
+                'PE': 'PE',
                 'CRYPTO':'CRYPTO',
                 'CONTINGENCY':'CONTINGENCY',
-                'PROPERTY': 'CONTINGENCY'}
+                'PROPERTY': 'PROPERTY',
+                'Dubai': 'PROPERTY',
+                'India': 'PROPERTY',
+                }
 
 target_alloc = {}
 

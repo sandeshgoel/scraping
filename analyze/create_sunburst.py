@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import io
+import sys
+import os
 
 def get_text_points(center, radius, angle):
     """Calculate the position for text labels"""
@@ -10,14 +12,22 @@ def get_text_points(center, radius, angle):
     y = center[1] + radius * np.sin(rad)
     return x, y
 
-def create_sunburst(data, title='', filename='sunburst_chart.png'):
+def create_sunburst(data, title='', filename='', show=False):
     """
-    Create a sunburst chart with Col3 as outer ring and =Col1 as inner ring
+    Create a sunburst chart with Col3 as outer ring and Col1 as inner ring
     """
     #print(data)
     if not isinstance(data, pd.DataFrame):
         data = pd.DataFrame(data, columns=['Col1', 'Col2', 'Col3', 'Percent'])
     
+    if 'Percent' not in data.columns:
+        if 'Value' not in data.columns:
+            print('Value column not found')
+            sys.exit(1)
+        else:
+            total = data['Value'].sum()
+            data['Percent'] = data['Value'] * 100/total
+        
     fig, ax = plt.subplots(figsize=(15, 15))
     ax.set_title(title, pad=20, fontdict={'fontsize': 20, 'weight': 'bold'})
     
@@ -122,28 +132,41 @@ def create_sunburst(data, title='', filename='sunburst_chart.png'):
     ax.set_axis_off()
     
     # Save plot
-    plt.savefig(filename, bbox_inches='tight', dpi=300, pad_inches=0.1)
-    print(f"Sunburst chart has been saved as {filename}")
+    if filename != '':
+        plt.savefig(filename, bbox_inches='tight', dpi=300, pad_inches=0.1)
+        print(f"Sunburst chart has been saved as {filename}")
 
     # Save the figure to a bytes buffer
     img_buffer = io.BytesIO()
     fig.savefig(img_buffer, format='png')
 
-    #plt.show()
+    if show: plt.show()
     plt.close() 
 
     return img_buffer
 
+def is_excel_file(filename):
+    _, ext = os.path.splitext(filename)
+    return ext.lower() in ['.xls', '.xlsx', '.xlsm', '.xlsb']
 
 # Example usage
 if __name__ == "__main__":
-    data = [
-        ['Debt', 'A', 'G', 10],
-        ['Debt', 'B', 'H', 10],
-        ['Equity', 'E', 'I', 10],
-        ['Equity', 'F', 'J', 10],
-        ['Gold', 'C', 'K', 10],
-        ['Global', 'D', 'L', 50],
-    ]
+    if len(sys.argv) > 1:
+        if not is_excel_file(sys.argv[1]):
+            print("Usage: python create_sunburst.py <excel_file>")
+            sys.exit(1)
+            
+        data = pd.read_excel(sys.argv[1])
+        data = data.dropna(how='all')
+        data.rename(columns={'Type': 'Col1', 'Subtype': 'Col2', 'Category': 'Col3'}, inplace=True)   
+    else:
+        data = [
+            ['Debt', 'A', 'G', 10],
+            ['Debt', 'B', 'H', 10],
+            ['Equity', 'E', 'I', 10],
+            ['Equity', 'F', 'J', 10],
+            ['Gold', 'C', 'K', 10],
+            ['Global', 'D', 'L', 50],
+        ]
     
-    create_sunburst(data, title='Asset Allocation')
+    create_sunburst(data, title='Asset Allocation', show=True)

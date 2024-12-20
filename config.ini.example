@@ -73,7 +73,9 @@ pan=
 
 [target-alloc]
 # gold
-GOLD=10
+GOLD-ETF=3
+GOLD-SGB=5
+GOLD-PHY=2
 # debt
 BOND=20
 GILT=10 

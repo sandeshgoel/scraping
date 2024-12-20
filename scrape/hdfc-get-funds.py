@@ -13,7 +13,7 @@ import configparser
 import argparse
 import re
 
-timeout = 30
+timeout = 60
 
 def exception_quit(browser):
 	#input('press key ...')
@@ -72,7 +72,7 @@ def get_hdfcbank_details(userid, password, verbose):#, num_accounts):
 
 	if verbose: print("Entered userid and clicked the continue button")
 
-	time.sleep(10) # wait for password field to load
+	time.sleep(30) # wait for password field to load
 	browser.switch_to.default_content()
 	#passwd_element = browser.find_elements("xpath", "//input[@name='fldPassword']")
 	#xpath = '/html/body/div[1]/div/div[2]/div[2]/div[2]/div[3]/div/div/div[2]/div/div/div[1]/div/div[2]/div[3]/div/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]/hdfc-specialchar/div/md-input-container/input'
