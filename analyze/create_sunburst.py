@@ -22,7 +22,7 @@ def create_sunburst(data, title='', filename='', show=False):
     
     if 'Percent' not in data.columns:
         if 'Value' not in data.columns:
-            print('Value column not found')
+            print('Value column not found!!')
             sys.exit(1)
         else:
             total = data['Value'].sum()
@@ -32,6 +32,9 @@ def create_sunburst(data, title='', filename='', show=False):
     ax.set_title(title, pad=20, fontdict={'fontsize': 20, 'weight': 'bold'})
     
     total = data['Percent'].sum()
+    if total != 100:
+        print(f'WARNING: Total {total} does not equal 100!!')
+        
     colors_inner = plt.cm.Pastel2(np.linspace(0, 1, len(data['Col1'].unique())+1))
     # colors_middle = plt.cm.Set2(np.linspace(0, 1, len(data['Col2'].unique())))
     # colors_outer = plt.cm.Set1(np.linspace(0, 1, len(data['Col3'].unique())))

@@ -14,6 +14,7 @@ args = args.parse_args()
 import configparser
 
 config = configparser.ConfigParser()
+config.optionxform = str
 config.read('config.ini')
 update_target_alloc(config)
 

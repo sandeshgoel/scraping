@@ -94,12 +94,12 @@ def update_target_alloc(config):
     
     section = dict(config['target-alloc'])
     for key, value in section.items():
-        target_alloc[key.upper()] = int(value) 
+        target_alloc[key] = int(value) 
     #print(target_alloc)
     validate_target_alloc()
     
 def get_target_alloc(subtype):
-    return target_alloc.get(subtype.upper(), 0)
+    return target_alloc.get(subtype, 0)
 
 def label_type(row):
     return subtype2type[row['Subtype']]
@@ -1246,7 +1246,7 @@ def add_ws_summary(wb, style, dfall, dffull, tl,
         ws.write_row(row, 4, [dev], style['value'])
         row += 1
         numrows += 1
-        print("%6s: %4.1f%%  %4.1f%% (%4d lacs)" % (x, tp, ap, dev))
+        print("%8s: %4.1f%%  %4.1f%% (%4d lacs)" % (x, tp, ap, dev))
     print("")
 
     # chart1 = wb.add_chart({'type': 'pie'})
@@ -1310,7 +1310,7 @@ def add_ws_summary(wb, style, dfall, dffull, tl,
         ws.write_row(row, 4, [t/100], style['percent'])
         tv = v * t / a
         dev = tv - v
-        print("%7s %7s %5.1f%% %5.1f%% (%4d lacs)" % (typ, subtype, t, a, dev))
+        print("%8s %8s %5.1f%% %5.1f%% (%4d lacs)" % (typ, subtype, t, a, dev))
         ws.write_row(row, 5, [dev], style['value'])
         row += 1
     print("")

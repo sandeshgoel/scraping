@@ -70,6 +70,7 @@ args.add_argument('-a', '--add', help='funds to add', type=int, default=0)
 args = args.parse_args()
 
 config = configparser.ConfigParser()
+config.optionxform = str
 config.read('config.ini')
 update_target_alloc(config)
 
