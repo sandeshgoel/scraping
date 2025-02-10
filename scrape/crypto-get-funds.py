@@ -221,7 +221,7 @@ if args.process == 0:
         if symbol_price[sym] == -1:
             print('ERROR: Failed to get price for %s!!' % sym)
             sys.exit(1)
-    print(symbol_price,'\n')
+    print({k:int(symbol_price[k]) for k in symbol_price.keys()},'\n')
 
     for index, row in dfv.iterrows():
         s = row['Symbol']

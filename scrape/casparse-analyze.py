@@ -440,7 +440,7 @@ def create_mfu(folio_lists, basemfparse):
         for folio in folio_list:
             for scheme in folio['schemes']:
                 ws.write_row(row, 0, [scheme['scheme'], folio['amc'],scheme['type'], folio['folio'], owner,
-                    scheme['close'], scheme['nav'], scheme['val']*100000, 
+                    scheme['close'], scheme['lastnav'], scheme['last_val']*100000, 
                     scheme['amfi'], scheme['isin'], scheme['xirr_1'], scheme['xirr_3'], scheme['xirr_6'], scheme['xirr_12']])
                 row += 1
 

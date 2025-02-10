@@ -62,6 +62,14 @@ if [[ $STAT6 == 1 ]]; then
 	echo "######## capitalmind FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.mfu-get-funds 2>&1
 fi
 
+echo $(date) "-------- starting stocks"
+python3 scrape/stocks-get-funds.py >> LOGS/log.mfu-get-funds 2>&1
+STAT7=$?
+echo "######## stocks_get_funds returned " $STAT7 "\n" | tee -a LOGS/log.mfu-get-funds 2>&1
+if [[ $STAT7 == 1 ]]; then 
+	echo "######## stocks FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.mfu-get-funds 2>&1
+fi
+
 
 echo " " > LOGS/log.generate-report 2>&1
 if [[ $STAT1 == 1 ]]; then 
@@ -81,6 +89,9 @@ if [[ $STAT5 == 1 ]]; then
 fi
 if [[ $STAT6 == 1 ]]; then 
 	echo "######## capitalmind FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.generate-report 2>&1
+fi
+if [[ $STAT7 == 1 ]]; then 
+	echo "######## stocks FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.generate-report 2>&1
 fi
 
 

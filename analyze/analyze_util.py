@@ -367,7 +367,14 @@ def file2df_zerodha(file, base):
     nowdate = file[datestart:datestart+10]
     #print(file, nowdate)
 
-    if nowdate >= '2022-10-14':
+    if nowdate >= '2025-02-10':
+        df = xl.parse(0)
+        if len(df.index) == 0:
+            print('Empty file', file)
+            return pd.DataFrame()
+        df.rename(columns={'Symbol':'Code'},
+                  inplace=True)
+    elif nowdate >= '2022-10-14':
         df = xl.parse(0, skiprows=22)
         if len(df.index) == 0:
             print('Empty file', file)
@@ -1191,7 +1198,7 @@ def add_ws_summary(wb, style, dfall, dffull, tl,
         trough_index = tl.index(trough)
         pch = tl[0] - peak
         lch = (tl[0] - trough)
-        print('\tPEAK  change: %+6.1f Lacs (%d%% from %d days ago)' % (pch, 100*pch/peak, peak_index))
+        print('\tPEAK  change: %+6.1f Lacs (%.1f%% from %d days ago)' % (pch, 100*pch/peak, peak_index))
         print('\tLOW   change: %+6.1f Lacs (%d%% from %d days ago)' % (lch, 100*lch/trough if (trough!=0) else 100,  trough_index))
     print()
 
