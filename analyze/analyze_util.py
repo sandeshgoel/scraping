@@ -1207,7 +1207,7 @@ def add_ws_summary(wb, style, dfall, dffull, tl,
 
     dfcon = dffull[dffull['Type']=='CONTINGENCY']
     contingency = dfcon['Value'].sum()
-    print("PROPERTY: %4.2f Cr (%d%%)" % (contingency/100.0, contingency/netw))
+    print("CONTINGENCY: %4.2f Cr (%d%%)" % (contingency/100.0, contingency/netw))
     print("INVESTMENTS: %4.2f Cr\n" % (netw - contingency/100.0))
 
     dfnoncon = dffull[dffull['Type']!='CONTINGENCY']
@@ -1217,7 +1217,7 @@ def add_ws_summary(wb, style, dfall, dffull, tl,
     print(own)
     print()
     
-    ws.write_row(row, 0, ["PROPERTY: %4.2f Cr (%d%%)\n" % (contingency/100.0, contingency/netw)], style['bold'])
+    ws.write_row(row, 0, ["CONTINGENCY: %4.2f Cr (%d%%)\n" % (contingency/100.0, contingency/netw)], style['bold'])
     row += 1
     ws.write_row(row, 0, ["INVESTMENTS: %4.2f Cr\n" % (netw - contingency/100.0)], style['bold'])
     row += 2

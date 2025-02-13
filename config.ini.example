@@ -15,11 +15,13 @@ basebankaxis=DATA/DAILY-BANK/axis-
 basebankidfc=DATA/DAILY-BANK/idfc-
 baseothers=DATA/DAILY-OTHERS/Assets-
 basecrypto=DATA/DAILY-CRYPTO/Crypto-
-basecryptocostdet=DATA/DAILY-CRYPTO/cost-detail/Crypto-Cost-Detail-
 basevested=DATA/DAILY-VESTED/Vested-
-basevesteddet=DATA/DAILY-VESTED/Vested-Detail-
 basecams=DATA/DAILY-CAMS/cams-
 basegold=DATA/DAILY-GOLD/gold-
+
+basecryptocostdet=DATA/HOLD-CRYPTO/Crypto-Cost-Detail-
+basevesteddet=DATA/HOLD-VESTED/Vested-Detail-
+baseholdzerodha=DATA/HOLD-ZERODHA/holdings-
 
 [users]
 owners=username1, username2

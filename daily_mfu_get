@@ -70,6 +70,13 @@ if [[ $STAT7 == 1 ]]; then
 	echo "######## stocks FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.mfu-get-funds 2>&1
 fi
 
+echo $(date) "-------- starting vested"
+python3 scrape/vested-get-funds.py >> LOGS/log.mfu-get-funds 2>&1
+STAT8=$?
+echo "######## vested_get_funds returned " $STAT8 "\n" | tee -a LOGS/log.mfu-get-funds 2>&1
+if [[ $STAT8 == 1 ]]; then 
+	echo "######## vested FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.mfu-get-funds 2>&1
+fi
 
 echo " " > LOGS/log.generate-report 2>&1
 if [[ $STAT1 == 1 ]]; then 
@@ -93,6 +100,9 @@ fi
 if [[ $STAT7 == 1 ]]; then 
 	echo "######## stocks FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.generate-report 2>&1
 fi
+if [[ $STAT8 == 1 ]]; then 
+	echo "######## vested FAILED, need to FIX!!!!!!!! ********\n" >> LOGS/log.generate-report 2>&1
+fi
 
 
 echo $(date) "-------- starting report"
@@ -103,7 +113,7 @@ echo "######## generate-report returned " $STATREP "\n" >> LOGS/log.generate-rep
 if [[ $STATREP == 0 ]]; then SUBJECT="SUCCESS"; fi;
 
 
-EMAILSUB="$SUBJECT generating funds report ($STAT1 $STAT2 $STAT3 $STAT4 $STAT5 $STAT6)" 
+EMAILSUB="$SUBJECT generating funds report ($STAT1 $STAT2 $STAT3 $STAT4 $STAT5 $STAT6 $STAT7 $STAT8)" 
 echo "########" $EMAILSUB "\n" >> LOGS/log.mfu-get-funds 2>&1
 echo $(date) >> LOGS/log.mfu-get-funds 2>&1
 echo "##############################################\n" >> LOGS/log.mfu-get-funds 2>&1

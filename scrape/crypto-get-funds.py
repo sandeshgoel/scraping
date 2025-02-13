@@ -189,53 +189,17 @@ data = config['data']
 basecrypto = data['basecrypto']
 basecryptocostdet = data['basecryptocostdet']
 
-basevested = data['basevested']
-basevesteddet = data['basevesteddet']
-
 if args.process == 0:
     now = time.time()
     nowstr = time.strftime('%Y-%m-%d_%H', time.gmtime(now))
     nowpr = time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime(now))
     print("Current time: %s\n" % nowpr)
 
-    # process vested file
-    filedet = get_latest_file(basevesteddet)
-    dfv = file2df(filedet)
-
-    print('Processing file %s ...' % filedet)
     usdinr = get_price('INR=X')
     if usdinr == -1:
         print('ERROR: Failed to get price for USD-INR!!')
         sys.exit(1)
     print('USD-INR %5.2f\n' % usdinr)
-
-    syms = dfv.Symbol.unique()
-    print(syms)
-
-    symbol_price = {}
-    for sym in syms:
-        if sym == 'USD': 
-            symbol_price[sym] = 1
-        else:
-            symbol_price[sym] = get_price(sym)
-        if symbol_price[sym] == -1:
-            print('ERROR: Failed to get price for %s!!' % sym)
-            sys.exit(1)
-    print({k:int(symbol_price[k]) for k in symbol_price.keys()},'\n')
-
-    for index, row in dfv.iterrows():
-        s = row['Symbol']
-        dfv.at[index, 'NAV'] = symbol_price[s]
-        dfv.at[index, 'USD'] = usdinr
-        dfv.at[index, 'Value'] = row['Units'] * symbol_price[s] * usdinr
-
-    print(dfv)
-
-    # Generate fund excel
-    fname = basevested+nowstr+'.xlsx'
-    dfv.to_excel(fname, index=False, engine='xlsxwriter')
-    print("\nWritten %d rows to file %s ..." % (len(dfv),fname))
-    print('-------------------------------------------------------')
 
     # process crypto file
     filedet = get_latest_file(basecryptocostdet)
