@@ -1,5 +1,4 @@
 import yfinance as yf
-from datetime import date, timedelta
 import pandas as pd
 import argparse
 import time
@@ -12,22 +11,21 @@ from requests import Request, Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
       
 def get_price(symbol):
-    #symbol = 'INR=X'
     #print('Getting price for symbol %s ...' % symbol)
-    #symbol = 'TSLA'
-    for i in range(5):
+    price = -1
+    for i in range(3):
         try:
             r = yf.Ticker(symbol)
             #print(r.info)
             curprice = r.history(period="1d", interval="30m")['Close'].iloc[-1]
-            #sys.exit(1)
             price = float(curprice)#r.major_holders[1][0])#r.info['regularMarketPrice']
             break
         except Exception as e:
-            if i>1: print('Exception %d: yf %s:' % (i, symbol), e)
-    if price is None: 
+            if i>0: print('Exception %d: yf %s:' % (i, symbol), e)
+        time.sleep(2)
+        
+    if price == -1: 
         pprint(vars(r))
-        price = -1
     return price
 
 # ----------------------------------------------------------------------------
@@ -45,7 +43,6 @@ def file2df(file):
     if file == "":
         return pd.DataFrame()
     df = pd.read_csv(file)
-    print(df)
     df.rename(columns={'Instrument':'Symbol', 'Qty.':'Units'}, inplace=True)
     
     return df
@@ -87,7 +84,7 @@ print('Processing file %s ...' % filedet)
 dfv = file2df(filedet)
 
 syms = dfv.Symbol.unique()
-print(syms)
+#print(syms)
 
 symbol_price = {}
 for sym in syms:

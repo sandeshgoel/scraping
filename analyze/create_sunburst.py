@@ -32,7 +32,7 @@ def create_sunburst(data, title='', filename='', show=False):
     ax.set_title(title, pad=20, fontdict={'fontsize': 20, 'weight': 'bold'})
     
     total = data['Percent'].sum()
-    if total != 100:
+    if abs(total-100) > 0.01:
         print(f'WARNING: Total {total} does not equal 100!!')
         
     colors_inner = plt.cm.Pastel2(np.linspace(0, 1, len(data['Col1'].unique())+1))
@@ -44,6 +44,8 @@ def create_sunburst(data, title='', filename='', show=False):
     start_angle = 90
     
     fontdict = {'fontsize': 12, 'weight': 'bold' }
+    fontdict2 = {'fontsize': 8, 'weight': 'bold' }
+    fontdict3 = {'fontsize': 5, 'weight': 'bold' }
     
     for i, (Col1, sales) in enumerate(Col1_groups.items()):
         angle = (sales / total) * 360
@@ -116,11 +118,11 @@ def create_sunburst(data, title='', filename='', show=False):
                 )
                 ax.add_patch(wedge)
                 
-                if row['Percent'] >= 0.6:
+                if row['Percent'] >= 0.1:
                     # Add Col3 label
                     x, y = get_text_points((0, 0), 2.6, prod_mid)
                     plt.text(x, y, f"{row['Col3']} {row['Percent']:,.0f}", 
-                            ha='center', va='center', fontdict=fontdict,
+                            ha='center', va='center', fontdict=fontdict if (row['Percent'] >= 0.6) else (fontdict2 if (row['Percent'] >= 0.4)  else fontdict3),
                             rotation=prod_mid)# - 90 if prod_mid > 90 and prod_mid < 270 else prod_mid + 90)
                 
                 prod_start = prod_end

@@ -50,6 +50,8 @@ def get_price(symbol):
     #symbol = 'INR=X'
     #print('Getting price for symbol %s ...' % symbol)
     #symbol = 'TSLA'
+    price = None
+    r = None
     for i in range(5):
         try:
             r = yf.Ticker(symbol)
@@ -68,6 +70,7 @@ def get_price(symbol):
 def get_price_wazirx_all(syms):
     s = requests.session()
     url = 'https://api.wazirx.com/sapi/v1/tickers/24hr'
+    d = []
     for i in range(5):
         try:
             r = s.get(url)
@@ -94,16 +97,19 @@ def get_price_wazirx(symbol):
 
     s = requests.session()
     url = 'https://api.wazirx.com/sapi/v1/ticker/24hr?symbol='+symbol
+    r = None
     for i in range(5):
         try:
             r = s.get(url)
             break
         except Exception as e:
             if i>1: print('Exception %d: wazirx %s:' % (i, symbol), e)
-
-    d = json.loads(r.content)
-    #print(d['symbol'], d['lastPrice'])
-    return float(d['lastPrice'])
+    if r:
+        d = json.loads(r.content)
+        #print(d['symbol'], d['lastPrice'])
+        return float(d['lastPrice'])
+    else:
+        return -1
 
 def get_fng():
     print('Getting fear and greed index ...') 

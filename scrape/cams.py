@@ -24,13 +24,17 @@ def exception_quit(browser):
     browser.quit()
     sys.exit(1)
 
-def wait_load(browser, timeout, xpath):
+def wait_load(browser, timeout, xpath, fail=True):
     print("%s: Waiting for %d seconds [%s]" % (time.strftime('%H:%M:%S', time.gmtime(time.time())), timeout, xpath))
     try:
         WebDriverWait(browser, timeout).until(EC.visibility_of_element_located((By.XPATH, xpath)))
     except TimeoutException:
         print("Timed out waiting for page to load")
-        exception_quit(browser)
+        if fail:
+            exception_quit(browser)
+        else:
+            return False
+    return True
 
 def load_page(browser, url, xpath):
     t1 = time.time()
@@ -85,12 +89,13 @@ def get_cams_report(user, verbose):
 
     #input("Enter something to continue ...")
     #//*[@id="mat-dialog-1"]/app-camsterms/div/div/mat-icon
-    wait_load(driver, timeout, "//div[@class='close-icon colsebanner']")
+    loaded = wait_load(driver, timeout, "//div[@class='close-icon colsebanner']", False)
 
-    elements = driver.find_elements(By.CSS_SELECTOR, "mat-icon[class*='close-popup']")
-    #for e in elements: print('mat_icon:', e, e.text)
-    action.move_to_element(elements[0]).click().perform()
-    if verbose: print('Clicked close icon')
+    if loaded:
+        elements = driver.find_elements(By.CSS_SELECTOR, "mat-icon[class*='close-popup']")
+        #for e in elements: print('mat_icon:', e, e.text)
+        action.move_to_element(elements[0]).click().perform()
+        if verbose: print('Clicked close icon')
 
     time.sleep(1)
     driver.find_element(By.CSS_SELECTOR, "mat-radio-button[value='detailed']").click() 
@@ -152,7 +157,9 @@ def get_cams_report(user, verbose):
     if verbose: print("Clicked submit")
     time.sleep(10)
     #input("Enter something to continue ...")
-
+    print("%s: Submitted successfully, quitting" % 
+          (time.strftime('%H:%M:%S', time.gmtime(time.time()))))
+                                               
     driver.quit()
 
 # ---------------------------------------------------------------------

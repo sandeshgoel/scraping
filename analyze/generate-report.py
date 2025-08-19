@@ -34,37 +34,37 @@ basevested = data['basevested']
 
 basecams = data['basecams']
 
-sources = ['AXIS', 'HDFC', 'MF', 'GEOJIT', 'ZERODHA', 'OTHER', 'CRYPTO', 'IDFC', 'CM', 'VESTED', 'CAMS']
+sources = ['AXIS', 'HDFC', 'MF', 'ZERODHA', 'OTHER', 'CRYPTO', 'IDFC', 'CM', 'VESTED', 'CAMS']
 oldest = {}
 recent = {}
 
-for offset in range(args.num_days):
-    df_hdfc = get_hdfc_df(now, offset, basebankhdfc)
-    if not df_hdfc.empty: 
-        recent['HDFC'] = offset
-        for i, row in df_hdfc.iterrows():
-            if (row['Amount'] < 7000) or \
-                (not str(row['Account']).startswith('5010014') and row['Amount'] < 26000) or \
-                (not str(row['Account']).startswith('550000') and row['Amount'] > 32000):
-                print('\n** HDFC Acccount %s (%s) needs action, balance - %d\n' % (row['Account'], row['Name'], row['Amount']))
-                RET_CODE = 1
-        if offset > 8:
-            print("\n** HDFC Bank summary is TOO old (%d days) **\n" % offset)
-            RET_CODE = 1
-        break
+# for offset in range(args.num_days):
+#     df_hdfc = get_hdfc_df(now, offset, basebankhdfc)
+#     if not df_hdfc.empty: 
+#         recent['HDFC'] = offset
+#         for i, row in df_hdfc.iterrows():
+#             if (row['Amount'] < 7000) or \
+#                 (not str(row['Account']).startswith('5010014') and row['Amount'] < 26000) or \
+#                 (not str(row['Account']).startswith('550000') and row['Amount'] > 32000):
+#                 print('\n** HDFC Acccount %s (%s) needs action, balance - %d\n' % (row['Account'], row['Name'], row['Amount']))
+#                 RET_CODE = 1
+#         if offset > 30:
+#             print("** HDFC Bank summary is TOO old (%d days) **\n" % offset)
+#             RET_CODE = 1
+#         break
 
-for offset in range(args.num_days):
-    df_axis = get_axis_df(now, offset, basebankaxis)
-    if not df_axis.empty: 
-        recent['AXIS'] = offset
-        for i, row in df_axis.iterrows():
-            if (row['Amount'] < 25000 or row['Amount'] > 32000):
-                print('\n** AXIS Acccount %s (%s) needs action, balance - %d\n' % (row['Account'], row['Name'], row['Amount']))
-                RET_CODE = 1
-        if offset > 8:
-            print("\n** AXIS Bank summary is TOO old (%d days) **\n" % offset)
-            RET_CODE = 1
-        break
+# for offset in range(args.num_days):
+#     df_axis = get_axis_df(now, offset, basebankaxis)
+#     if not df_axis.empty: 
+#         recent['AXIS'] = offset
+#         for i, row in df_axis.iterrows():
+#             if (row['Amount'] < 25000 or row['Amount'] > 32000):
+#                 print('\n** AXIS Acccount %s (%s) needs action, balance - %d\n' % (row['Account'], row['Name'], row['Amount']))
+#                 RET_CODE = 1
+#         if offset > 30:
+#             print("** AXIS Bank summary is TOO old (%d days) **\n" % offset)
+#             RET_CODE = 1
+#         break
 
 cam_owners = [x.split('-')[1] for x in config.sections() if x.startswith('cam-')]
 
@@ -77,7 +77,7 @@ for owner in cam_owners:
     today = datetime.datetime.now()
     difference = (today - date_obj).days
     if recent.get('CAMS', 0) <  difference: recent['CAMS'] = difference
-    if difference > 8:
+    if difference > 12:
         print(f'** CAMS-{owner} file is too old ({difference} days since {date_str}) **\n')
 
 dfc = get_classifier_df()
@@ -209,7 +209,7 @@ print(out)
 #print(missing)
 print('')
 
-stale = any([x>14 for x in recent.values()])
+stale = any([x>15 for x in recent.values()])
 if stale: 
     print("**** ACTION NEEDED To UPDATE STALE DATA ****\n")
     RET_CODE = 1

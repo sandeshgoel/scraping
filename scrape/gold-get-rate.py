@@ -20,14 +20,18 @@ def get_gold_rate():
         driver.get("https://www.ibjarates.com/")
         
 
-        xpath = '//*[@id="lblrate24K"]'
+        #xpath = '//*[@id="lblrate24K"]'
+        xpath = '//*[@id="GoldRatesCompare999"]'
         #full_xpath = '/html/body/form/div[5]/div[1]/div[1]/div[1]/div[1]/div[1]/div/div/ul/li/div/div[1]/h3/span[1]'
         # Find the gold rate element
         #gold_rate_element = driver.find_element(By.CLASS_NAME, "gold-rate-value")
         gold_rate_element = driver.find_element(By.XPATH, xpath)
-
+        # print all the fields of gold_rate_element
+        #print(gold_rate_element.get_attribute("innerHTML"))
+         
         # Extract the gold rate
-        gold_rate = gold_rate_element.text.strip()
+        gold_rate = gold_rate_element.get_attribute("innerHTML").strip()
+        #print("Gold rate:", gold_rate)
         
         # Close the browser session
         driver.quit()
@@ -56,7 +60,7 @@ if __name__ == "__main__":
     todaystr = time.strftime('%Y-%m-%d', time.gmtime(now))
 
     df = pd.DataFrame([[gold_rate]], columns = ['Gold Rate'])
-    print(df)
+    #print(df)
 
     fname = basegold + todaystr +'.xlsx'
     df.to_excel(fname, index=False)

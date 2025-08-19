@@ -15,8 +15,8 @@ import re
 
 timeout = 60
 
-def exception_quit(browser):
-	#input('press key ...')
+def exception_quit(browser, verbose=False):
+	if verbose: input('press key ...')
 	browser.quit()
 	sys.exit(1)
 
@@ -106,12 +106,12 @@ def get_hdfcbank_details(userid, password, verbose):#, num_accounts):
 	#//*[@id="common_menu1"]
 	#//*[@id="left_menu"]
 	#wait_load(browser, timeout, "//frame[@name='left_menu']") -- for some reason this is failing 31/10/23
-	time.sleep(10)
+	time.sleep(15)
 
 	ul_element = browser.find_elements("xpath", '//*[@id="savingsTabPane"]/section/div/div/div[1]/ul')
 	if len(ul_element) != 1:
 		print('No unique ul element: %d' % len(ul_element))
-		exception_quit(browser)
+		exception_quit(browser, verbose=verbose)
 
 	#all_li = ul_element[0].find_elements(By.TAG_NAME, "li")
 	all_li = ul_element[0].find_elements(By.XPATH, "./li")

@@ -229,8 +229,8 @@ def add_ws_summary(wb, style, folio_list):
             last_tot_value += scheme['last_val']
             tot_acc += scheme['accrued']
             ws.write_row(row, 0, [scheme['scheme'], scheme['advisor'], scheme['type'], 
-                int(scheme['close']), scheme['nav'], round(scheme['val'], 1), 
-                scheme['lastdate'], scheme['lastnav'], round(scheme['last_val'], 1),
+                float(scheme['close']), scheme['nav'], round(scheme['val'], 2), 
+                scheme['lastdate'], scheme['lastnav'], round(scheme['last_val'], 2),
                 round(scheme['age'], 1), round(scheme['newest'], 1), scheme['noLT'], 
                 round(scheme['accrued']/100000, 1), 
                 scheme['amfi'], scheme['isin'], scheme['xirr_1'], scheme['xirr_3'], scheme['xirr_6'], scheme['xirr_12']])
@@ -240,7 +240,7 @@ def add_ws_summary(wb, style, folio_list):
 
     ws.write_row(row, 0, ['TOTAL', '', '', '', '', int(tot_value), '', '', int(last_tot_value), '', round(tot_acc/100000, 1)], style['bold'])
     row += 1
-    print('$$$$ Total Value = %d lacs' % tot_value)
+    print('$$$$ Total Value = %d lacs' % last_tot_value)
     ws.set_column(0, 0, 50)
 
 def add_ws_equity(wb, style, folio_list):
@@ -328,7 +328,7 @@ def add_ws_debt(wb, style, folio_list):
 
         tot_value += scheme['last_val']
         tot_acc += scheme['accrued']
-        ws.write_row(row, 0, [scheme['scheme'],  round(scheme['last_val'],1), 
+        ws.write_row(row, 0, [scheme['scheme'],  round(scheme['last_val'],2), 
             round(scheme['age'], 1), round(scheme['newest'], 1), scheme['noLT'], 
             round(scheme['accrued']/100000, 1), 
             scheme['amfi'], scheme['isin'], scheme['xirr_1'], scheme['xirr_3'], scheme['xirr_6'], scheme['xirr_12']])
@@ -609,7 +609,7 @@ def get_latest_file(base, owner=None):
 
 def process_file(fname, passwd):
     # Get data in json format
-    json_str = casparser.read_cas_pdf(fname, passwd, output="json")
+    json_str = str(casparser.read_cas_pdf(fname, passwd, output="json"))
     #pprint.pprint(json_str)
     data = json.loads(json_str)
     keys = data.keys()
@@ -763,6 +763,7 @@ def process_file(fname, passwd):
 
 P = argparse.ArgumentParser(description="__doc__")
 P.add_argument("-f", "--file", type=str, default=None, help="File to process")
+P.add_argument("-u", "--user", type=str, default=None, help="User to process")
 P.add_argument("-p", "--password", type=str, default=None, help="Password")
 P.add_argument("-v", "--verbose", action='store_true', help="Verbose mode")
 args = P.parse_args()
@@ -784,7 +785,9 @@ data = config['data']
 basemfparse = data['basemfparse']
 basecams = data['basecams']
 owners = [x.split('-')[1] for x in config.sections() if x.startswith('cam-')]
-
+if args.user is not None:
+    owners = [x for x in owners if x == args.user]
+    
 if args.file is None:
     # if no file is passed, get latest CAM file for each owner
     new_folio_lists = {}

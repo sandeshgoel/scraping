@@ -24,7 +24,7 @@ def label_subtype(row):
         return 'GOLD-ETF'
     if row['Category'] in ['SGB']:
         return 'GOLD-SGB'
-    if row['Category'] in ['Jewellary', 'GOLD']:
+    if row['Category'] in ['Jewellary', 'Jewellery', 'GOLD']:
         return 'GOLD-PHY'
 
     if row['Category'] in ['FD']:
@@ -504,6 +504,8 @@ def file2df_assets(file, base):
     if nowdate >= '2024-09-27':
         gold_rate = get_latest_gold_rate()
         df.loc[df['Category'] == 'GOLD', 'Value'] = df['area'] * 0.9 * gold_rate / 100000
+        df.loc[df['Category'] == 'Jewellery', 'Value'] = df['area'] * 0.9 * gold_rate / 100000
+        df.loc[df['Category'] == 'Jewellary', 'Value'] = df['area'] * 0.9 * gold_rate / 100000
         #print(df[df['Category'].isin(['GOLD', 'Liquid'])])
 
     if nowdate >= '2023-07-28':
