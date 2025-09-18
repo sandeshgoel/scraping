@@ -13,10 +13,11 @@ from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 def get_price(symbol):
     #print('Getting price for symbol %s ...' % symbol)
     price = -1
+    r = None
     for i in range(3):
+        r = yf.Ticker(symbol)
+        #print(r.info)
         try:
-            r = yf.Ticker(symbol)
-            #print(r.info)
             curprice = r.history(period="1d", interval="30m")['Close'].iloc[-1]
             price = float(curprice)#r.major_holders[1][0])#r.info['regularMarketPrice']
             break
@@ -82,9 +83,10 @@ filedet = get_latest_file(baseholdzerodha)
 print('Processing file %s ...' % filedet)
 
 dfv = file2df(filedet)
+dfv['Symbol'] = dfv['Symbol'].str.split('-').str[0]
 
 syms = dfv.Symbol.unique()
-#print(syms)
+print(syms)
 
 symbol_price = {}
 for sym in syms:
@@ -98,10 +100,16 @@ for sym in syms:
         
 print({k:int(symbol_price[k]) for k in symbol_price.keys()},'\n')
 
-for index, row in dfv.iterrows():
-    s = row['Symbol']
-    dfv.at[index, 'NAV'] = symbol_price[s]
-    dfv.at[index, 'Value'] = row['Units'] * symbol_price[s]
+# for index, row in dfv.iterrows():
+#     s = row['Symbol']
+#     dfv.at[index, 'NAV'] = symbol_price[s]
+#     dfv.at[index, 'Value'] = row['Units'] * symbol_price[s]
+
+# Map NAV prices to the Symbol column
+dfv['NAV'] = dfv['Symbol'].map(symbol_price)
+
+# Calculate Value column
+dfv['Value'] = dfv['Units'] * dfv['NAV']
 
 print(dfv)
 

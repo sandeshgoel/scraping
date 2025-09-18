@@ -12,10 +12,12 @@ from pprint import pprint
 def get_price(symbol):
     #print('Getting price for symbol %s ...' % symbol)
     price = -1
+    currency = 'USD'
+    r = None
     for i in range(3):
         try:
             r = yf.Ticker(symbol)
-            #print(r.info)
+            currency = r.info['currency'].upper()
             curprice = r.history(period="1d", interval="30m")['Close'].iloc[-1]
             price = float(curprice)#r.major_holders[1][0])#r.info['regularMarketPrice']
             break
@@ -25,8 +27,7 @@ def get_price(symbol):
         
     if price == -1: 
         pprint(vars(r))
-    return price
-
+    return price, currency
 # ----------------------------------------------------------------------------
 
 def get_latest_file(base):
@@ -69,37 +70,57 @@ dfv = file2df(filedet)
 
 print('Processing file %s ...' % filedet)
 
-usdinr = get_price('INR=X')
+usdinr, _ = get_price('INR=X')
 if usdinr == -1:
     print('ERROR: Failed to get price for USD-INR!!')
     sys.exit(1)
-print('USD-INR %5.2f\n' % usdinr)
+print('USD-INR %5.2f' % usdinr)
 
-aedinr = get_price('AEDINR=X')
+aedinr, _ = get_price('AEDINR=X')
 if aedinr == -1:
     print('ERROR: Failed to get price for AED-INR!!')
     sys.exit(1)
-print('AED-INR %5.2f\n' % aedinr)
+print('AED-INR %5.2f' % aedinr)
+
+gbpinr, _ = get_price('GBPINR=X')
+if gbpinr == -1:
+    print('ERROR: Failed to get price for GBP-INR!!')
+    sys.exit(1)
+print('GBP-INR %5.2f\n' % gbpinr)
+
+currency2inr = {
+    'USD': usdinr,
+    'AED': aedinr,
+    'GBP': gbpinr,
+}
 
 syms = dfv.Symbol.unique()
 print(syms)
 
 symbol_price = {}
+symbol_currency = {}
 for sym in syms:
-    if sym == 'USD': 
+    if sym in ['GBP', 'USD']: 
         symbol_price[sym] = 1
+        symbol_currency[sym] = sym
     else:
-        symbol_price[sym] = get_price(sym)
+        symbol_price[sym], symbol_currency[sym] = get_price(sym)
     if symbol_price[sym] == -1:
         print('ERROR: Failed to get price for %s!!' % sym)
         sys.exit(1)
-print({k:int(symbol_price[k]) for k in symbol_price.keys()},'\n')
+print({k:str(int(symbol_price[k]))+' '+symbol_currency[k] for k in symbol_price.keys()},'\n')
 
-for index, row in dfv.iterrows():
-    s = row['Symbol']
-    dfv.at[index, 'NAV'] = symbol_price[s]
-    dfv.at[index, 'USD'] = usdinr
-    dfv.at[index, 'Value'] = row['Units'] * symbol_price[s] * usdinr
+# for index, row in dfv.iterrows():
+#     s = row['Symbol']
+#     dfv.at[index, 'NAV'] = symbol_price[s]
+#     dfv.at[index, 'Currency'] = symbol_currency[s]
+#     dfv.at[index, 'Rate'] = currency2inr[symbol_currency[s]]
+#     dfv.at[index, 'Value'] = row['Units'] * symbol_price[s] * currency2inr[symbol_currency[s]]
+
+dfv['NAV'] = dfv['Symbol'].map(symbol_price)
+dfv['Currency'] = dfv['Symbol'].map(symbol_currency)
+dfv['Rate'] = dfv['Currency'].map(currency2inr)
+dfv['Value'] = dfv['Units'] * dfv['NAV'] * dfv['Rate']
 
 print(dfv)
 

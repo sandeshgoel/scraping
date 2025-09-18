@@ -29,7 +29,7 @@ now = time.time()
 nowstr = time.strftime('%Y-%m-%d_%H-%M-UTC', time.gmtime(now))
 todaystr = time.strftime('%Y-%m-%d', time.gmtime(now))
 
-timeout = 20
+timeout = 30
 
 def exception_quit(browser):
 	browser.quit()

@@ -677,6 +677,13 @@ def process_file(fname, passwd):
                 print("\t\t%s:%s (open %s close %s): %d transactions" % 
                 (scheme['amfi'], scheme_name, scheme['open'], scheme['close'], trans_num))
 
+            if scheme['isin'] is None and float(scheme['close']) > 0: 
+                print("WARNING: ISIN missing for scheme %s" % scheme_name)
+                scheme['isin'] = 'INF226401018' # capitalmind
+            if scheme['amfi'] is None and float(scheme['close']) > 0: 
+                print("WARNING: AMFI missing for scheme %s" % scheme_name)
+                scheme['amfi'] = '153738' # capitalmind 
+                
             tot_units = 0
             for i, trans in enumerate(trans_list):
                 # parsing error workaround

@@ -14,7 +14,7 @@ args = args.parse_args()
 import configparser
 
 config = configparser.ConfigParser()
-config.optionxform = str
+config.optionxform = str # type: ignore
 config.read('config.ini')
 update_target_alloc(config)
 
@@ -209,6 +209,7 @@ print(out)
 #print(missing)
 print('')
 
+recent.pop('GEOJIT', 0)
 stale = any([x>15 for x in recent.values()])
 if stale: 
     print("**** ACTION NEEDED To UPDATE STALE DATA ****\n")
