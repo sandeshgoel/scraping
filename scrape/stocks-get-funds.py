@@ -18,7 +18,7 @@ def get_price(symbol):
         r = yf.Ticker(symbol)
         #print(r.info)
         try:
-            curprice = r.history(period="1d", interval="30m")['Close'].iloc[-1]
+            curprice = r.history(period=f"{i+1}d", interval="30m")['Close'].iloc[-1]
             price = float(curprice)#r.major_holders[1][0])#r.info['regularMarketPrice']
             break
         except Exception as e:

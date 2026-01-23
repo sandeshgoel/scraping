@@ -60,4 +60,4 @@ wheel==0.44.0
 wsproto==1.2.0
 xlrd==2.0.1
 XlsxWriter==3.2.0
-yfinance==0.2.43
+yfinance==1.0

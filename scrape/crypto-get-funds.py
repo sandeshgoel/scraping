@@ -84,9 +84,14 @@ def get_price_wazirx_all(syms):
             if i>1: print('Exception %d: wazirx %s:' % (i), e)
             time.sleep(1)
 
+    # print([x['symbol'] for x in d])
+    # print(syms)
     ret = {}
     for s in syms:
-        ret[s] = next(int(float(x.get('lastPrice', -1))) for x in d if x['symbol'] == s.lower()+'inr')
+        if s.lower()+'inr' in [x['symbol'] for x in d]:
+            ret[s] = next(int(float(x.get('lastPrice', -1))) for x in d if x['symbol'] == s.lower()+'inr')
+        else:
+            ret[s] = 0
 
     return ret
 
