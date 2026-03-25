@@ -77,7 +77,7 @@ for owner in cam_owners:
     today = datetime.datetime.now()
     difference = (today - date_obj).days
     if recent.get('CAMS', 0) <  difference: recent['CAMS'] = difference
-    if difference > 12:
+    if difference > 15:
         print(f'** CAMS-{owner} file is too old ({difference} days since {date_str}) **\n')
 
 dfc = get_classifier_df()
@@ -210,7 +210,7 @@ print(out)
 print('')
 
 recent.pop('GEOJIT', 0)
-stale = any([x>15 for x in recent.values()])
+stale = any([x>20 for x in recent.values()])
 if stale: 
     print("**** ACTION NEEDED To UPDATE STALE DATA ****\n")
     RET_CODE = 1

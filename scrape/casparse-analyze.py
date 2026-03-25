@@ -23,7 +23,7 @@ def url_get(s, url, verbose):
     r = s.get(url)#, verify=False)
     #print("STATUS =", r.status_code)
     if r.status_code != 200:
-        print("Request failed")
+        print(f"{url}: Request failed: Status code {r.status_code}\n{r.text}")
         sys.exit(1)
     return r
 
