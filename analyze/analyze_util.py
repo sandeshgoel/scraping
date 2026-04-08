@@ -33,7 +33,7 @@ def label_subtype(row):
         return 'GILT'
     if row['Category'] in ['DEBT', 'CASH', 'Liquid']:
         return 'LIQUID'
-    if row['Category'] in ['Short Duration', 'Corporate Bond', 'Credit Risk']:
+    if row['Category'] in ['Short Duration', 'Corporate Bond', 'Credit Risk', 'Medium Term', 'Dynamic']:
         return 'STDEBT'
     if row['Category'] in ['EPF', 'PPF', 'NPS', 'SCSS', 'PMVVY', 'LIC', 'RBI']:
         return 'BOND'
@@ -1189,10 +1189,18 @@ def add_ws_summary(wb, style, dfall, dffull, tl,
     print('\nNET WORTH: %4.2f Cr' % netw)
     if NUM_DAYS > 1: print('\tDAY   change: %+6.1f Lacs' % (tl[0] - tl[1]))
     if NUM_DAYS > 7: print('\tWEEK  change: %+6.1f Lacs' % (tl[0] - tl[7]))
-    if NUM_DAYS > 30: print('\tMONTH change: %+6.1f Lacs' % (tl[0] - tl[30]))
-    if NUM_DAYS > 180: print('\t6-MON change: %+6.1f Lacs' % (tl[0] - tl[180]))
-    if NUM_DAYS > 365: print('\tYEAR  change: %+6.1f Lacs' % (tl[0] - tl[365]))
-
+    if NUM_DAYS > 30: print('\tMONTH change: %+6.1f Lacs (%.1f%%)' % (tl[0] - tl[30], 100*(tl[0] - tl[30])/tl[30] if tl[30] != 0 else 100))
+    if NUM_DAYS > 180: print('\t6-MON change: %+6.1f Lacs (%.1f%%)' % (tl[0] - tl[180], 100*(tl[0] - tl[180])/tl[180] if tl[180] != 0 else 100))
+    
+    i = 1
+    while True:
+        n = 365 * i
+        if NUM_DAYS > n: 
+            print('\t%d-YEAR change: %+5.1f Cr   (%.1f%%)' % (i, (tl[0] - tl[n])/100, 100*(tl[0] - tl[n])/tl[n] if tl[n] != 0 else 100))
+            i += 1
+        else:
+            break
+    
     if NUM_DAYS > 1:
         peak = max(tl[1:])
         peak_index = tl.index(peak)
@@ -1230,8 +1238,8 @@ def add_ws_summary(wb, style, dfall, dffull, tl,
     print("Maturing next:")
     for i in range(len(dffd)):
         if i>1 and dffd['TTM'].iloc[i]>90: break
-        print("\t%2d lacs for %14s on %s (%d days)" % (dffd['Value'].iloc[i], dffd['Desc'].iloc[i], 
-            dffd['Maturity'].iloc[i], dffd['TTM'].iloc[i]))
+        print("\t%4.1f lacs for %-14s on %s (%d days)" % (dffd['Value'].iloc[i], dffd['Desc'].iloc[i], 
+            dffd['Maturity'].iloc[i].strftime('%Y-%m-%d'), dffd['TTM'].iloc[i]))
 
     print("\n**** INVESTMENT SPLIT ****\n")
     ws.write_row(row, 0, ['**** INVESTMENT SPLIT ****'], style['bold'])
@@ -1625,7 +1633,8 @@ def generate_report(tl, df_daily, dfg_daily, dfz_daily, dfa_daily, dfc_daily, df
     dfcm, ocm = get_recent_df(dfcm_daily, NUM_DAYS)
 
     add_ws(wb, df, o, 'MFU', style, now)
-    add_ws(wb, dfg, og, 'Geojit', style, now)
+    if dfg is not None and not dfg.empty:
+        add_ws(wb, dfg, og, 'Geojit', style, now)
     add_ws(wb, dfz, oz, 'Zerodha', style, now)
     add_ws(wb, dfa, oa, 'Others', style, now)
     add_ws_crypto(wb, dfc, oc, 'Crypto', style, now)

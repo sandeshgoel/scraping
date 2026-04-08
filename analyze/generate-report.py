@@ -3,7 +3,7 @@ import sys
 from analyze_util import *
 
 RET_CODE = 0
-NUM_DAYS = 730
+NUM_DAYS = 1100
 now = time.time()
 
 args = argparse.ArgumentParser(description='Generate report')

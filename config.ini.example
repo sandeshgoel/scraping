@@ -76,20 +76,23 @@ pan=
 [target-alloc]
 # gold
 GOLD-ETF=3
-GOLD-SGB=5
-GOLD-PHY=2
+GOLD-SGB=4
+GOLD-PHY=3
 # debt
-BOND=20
-GILT=10 
-FD=4
-STDEBT=2 
-LIQUID=18 
+BOND=11
+GILT=4
+FD=2
+STDEBT=4
+LIQUID=6
 # equity
-PASSIVE=5 
-ACTIVE=9 
+PASSIVE=3
+ACTIVE=6 
 # private equity
-PE=6
+PE=4
 # global
 GLOBAL=12
 # crypto
-CRYPTO=4
+CRYPTO=3
+# property
+Dubai=13
+India=22
