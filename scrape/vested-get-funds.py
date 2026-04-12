@@ -58,6 +58,7 @@ data = config['data']
 
 basevested = data['basevested']
 basevesteddet = data['basevesteddet']
+basecurrency = data['basecurrency']
 
 now = time.time()
 nowstr = time.strftime('%Y-%m-%d_%H', time.gmtime(now))
@@ -93,6 +94,10 @@ currency2inr = {
     'AED': aedinr,
     'GBP': gbpinr,
 }
+
+fname = basecurrency+nowstr+'.xlsx'
+pd.DataFrame([currency2inr]).to_excel(fname, index=False, engine='xlsxwriter')
+print("\nWritten %d rows to file %s ...\n" % (len(currency2inr),fname))
 
 syms = dfv.Symbol.unique()
 print(syms)
