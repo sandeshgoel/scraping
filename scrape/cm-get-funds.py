@@ -41,6 +41,14 @@ def wait_load(browser, timeout, xpath):
 		WebDriverWait(browser, timeout).until(EC.visibility_of_element_located((By.XPATH, xpath)))
 	except TimeoutException:
 		print("Timed out waiting for page to load")
+		try:
+			browser.save_screenshot('/tmp/cm-timeout.png')
+			with open('/tmp/cm-timeout.html', 'w') as f:
+				f.write(browser.page_source)
+			print("Saved debug screenshot to /tmp/cm-timeout.png and HTML to /tmp/cm-timeout.html")
+			print("Current URL: %s" % browser.current_url)
+		except Exception as e:
+			print("Could not save debug info: %s" % e)
 		exception_quit(browser)
 
 def load_page(browser, url, xpath):
@@ -86,7 +94,11 @@ login_element[0].click()
 #print("Clicked the login button")
 
 # Wait for dashboard to load
-val_element_path = "//h6[@class='jss94 jss111 jss185']"
+# Note: Capitalmind's front-end uses Material-UI's auto-generated "jssNNN" class
+# names, which are regenerated on every deploy and are not stable selectors.
+# Anchor instead to the "PORTFOLIO VALUE" heading text, which is stable, and
+# grab the first <p title="..."> that follows it (the rupee value tooltip).
+val_element_path = "//h2[normalize-space()='PORTFOLIO VALUE']/following-sibling::div[1]/p[@title]"
 wait_load(browser, timeout, val_element_path)
 print("Dashboard has loaded")
 

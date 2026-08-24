@@ -70,20 +70,18 @@ def get_cams_report(user, verbose):
     #driver.find_element(By.CSS_SELECTOR, "span[class='mat-radio-container']").click() 
     #element = driver.find_element(By.CSS_SELECTOR, "span[class='mat-radio-label-content']")
 
-    time.sleep(5)
     #input("Enter something to continue ...")
 
-    element = driver.find_element(By.CSS_SELECTOR, "input[type='radio'][value='ACCEPT']")
+    element = WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "input[type='radio'][value='ACCEPT']")))
 
     action = ActionChains(driver)
     action.move_to_element(element).click().perform()
 
     if verbose: print('Clicked ACCEPT')
 
-    driver.find_element(By.CSS_SELECTOR, "input[type='button'][value='PROCEED']").click() 
+    driver.find_element(By.CSS_SELECTOR, "input[type='button'][value='PROCEED']").click()
     if verbose: print('Clicked PROCEED')
 
-    time.sleep(2)
     #e = driver.find_element(By.XPATH, "//*[@id='mat-dialog-1']/app-camsterms/div/div/mat-icon")
     #if e: e.click()
 
@@ -98,13 +96,13 @@ def get_cams_report(user, verbose):
         if verbose: print('Clicked close icon')
 
     time.sleep(1)
-    driver.find_element(By.CSS_SELECTOR, "mat-radio-button[value='detailed']").click() 
+    driver.find_element(By.CSS_SELECTOR, "mat-radio-button[value='detailed']").click()
     if verbose: print('Clicked detailed')
-    time.sleep(1)
-    driver.find_element(By.CSS_SELECTOR, "mat-radio-button[value='SP']").click() 
+    time.sleep(2)
+    driver.find_element(By.CSS_SELECTOR, "mat-radio-button[value='SP']").click()
     if verbose: print('Clicked SP')
-    time.sleep(20)
-    driver.find_element(By.CSS_SELECTOR, "mat-radio-button[value='YT']").click() 
+    element = WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "mat-radio-button[value='YT']")))
+    driver.execute_script("arguments[0].click();", element)
     if verbose: print('Selected radio button YT')
     
     time.sleep(1)
@@ -148,14 +146,22 @@ def get_cams_report(user, verbose):
     # enter password
     driver.find_element(By.CSS_SELECTOR, "input[formcontrolname='password']").send_keys(user['pan']) 
     time.sleep(1)
-    driver.find_element(By.CSS_SELECTOR, "input[formcontrolname='confirmPassword']").send_keys(user['pan']) 
-    time.sleep(1)
+    driver.find_element(By.CSS_SELECTOR, "input[formcontrolname='confirmPassword']").send_keys(user['pan'])
+    time.sleep(2)
 
     #input("All inputs done, Enter something to submit ...")
 
-    driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click() 
+    # Use a JS click instead of a native Selenium click: a banner/overlay
+    # sometimes re-appears over the submit button after filling in the form
+    # fields, which causes a native click to raise
+    # ElementClickInterceptedException. A JS click bypasses that since it
+    # doesn't depend on the element's on-screen hit-testing.
+    submit_element = WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']")))
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", submit_element)
+    time.sleep(0.5)
+    driver.execute_script("arguments[0].click();", submit_element)
     if verbose: print("Clicked submit")
-    time.sleep(10)
+    time.sleep(5)
     #input("Enter something to continue ...")
     print("%s: Submitted successfully, quitting" % 
           (time.strftime('%H:%M:%S', time.gmtime(time.time()))))
